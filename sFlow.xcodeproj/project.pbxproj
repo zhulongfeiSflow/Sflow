@@ -8,11 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		7AE9929C1BA2780000630A5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE9929B1BA2780000630A5A /* AppDelegate.swift */; };
-		7AE9929E1BA2780000630A5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE9929D1BA2780000630A5A /* ViewController.swift */; };
 		7AE992A11BA2780000630A5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AE9929F1BA2780000630A5A /* Main.storyboard */; };
 		7AE992A31BA2780000630A5A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AE992A21BA2780000630A5A /* Images.xcassets */; };
 		7AE992A61BA2780000630A5A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7AE992A41BA2780000630A5A /* LaunchScreen.xib */; };
 		7AE992B21BA2780000630A5A /* sFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE992B11BA2780000630A5A /* sFlowTests.swift */; };
+		7AE992CE1BA278F700630A5A /* SPrecedureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE992CA1BA278F700630A5A /* SPrecedureView.swift */; };
+		7AE992CF1BA278F700630A5A /* SprogressStatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE992CB1BA278F700630A5A /* SprogressStatisticsView.swift */; };
+		7AE992D01BA278F700630A5A /* SProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE992CC1BA278F700630A5A /* SProjectView.swift */; };
+		7AE992D11BA278F700630A5A /* XHNewsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE992CD1BA278F700630A5A /* XHNewsItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,13 +32,16 @@
 		7AE992961BA2780000630A5A /* sFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = sFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AE9929A1BA2780000630A5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7AE9929B1BA2780000630A5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		7AE9929D1BA2780000630A5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		7AE992A01BA2780000630A5A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7AE992A21BA2780000630A5A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		7AE992A51BA2780000630A5A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		7AE992AB1BA2780000630A5A /* sFlowTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = sFlowTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AE992B01BA2780000630A5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7AE992B11BA2780000630A5A /* sFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sFlowTests.swift; sourceTree = "<group>"; };
+		7AE992CA1BA278F700630A5A /* SPrecedureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SPrecedureView.swift; sourceTree = "<group>"; };
+		7AE992CB1BA278F700630A5A /* SprogressStatisticsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprogressStatisticsView.swift; sourceTree = "<group>"; };
+		7AE992CC1BA278F700630A5A /* SProjectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SProjectView.swift; sourceTree = "<group>"; };
+		7AE992CD1BA278F700630A5A /* XHNewsItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XHNewsItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,7 +84,10 @@
 			isa = PBXGroup;
 			children = (
 				7AE9929B1BA2780000630A5A /* AppDelegate.swift */,
-				7AE9929D1BA2780000630A5A /* ViewController.swift */,
+				7AE992CC1BA278F700630A5A /* SProjectView.swift */,
+				7AE992CA1BA278F700630A5A /* SPrecedureView.swift */,
+				7AE992CB1BA278F700630A5A /* SprogressStatisticsView.swift */,
+				7AE992CD1BA278F700630A5A /* XHNewsItem.swift */,
 				7AE9929F1BA2780000630A5A /* Main.storyboard */,
 				7AE992A21BA2780000630A5A /* Images.xcassets */,
 				7AE992A41BA2780000630A5A /* LaunchScreen.xib */,
@@ -156,11 +165,14 @@
 		7AE9928E1BA2780000630A5A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastSwiftMigration = 0710;
+				LastSwiftUpdateCheck = 0710;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "朱龙飞";
 				TargetAttributes = {
 					7AE992951BA2780000630A5A = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = 83YSXGYW5N;
 					};
 					7AE992AA1BA2780000630A5A = {
 						CreatedOnToolsVersion = 6.4;
@@ -212,8 +224,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7AE9929E1BA2780000630A5A /* ViewController.swift in Sources */,
+				7AE992D01BA278F700630A5A /* SProjectView.swift in Sources */,
 				7AE9929C1BA2780000630A5A /* AppDelegate.swift in Sources */,
+				7AE992CF1BA278F700630A5A /* SprogressStatisticsView.swift in Sources */,
+				7AE992CE1BA278F700630A5A /* SPrecedureView.swift in Sources */,
+				7AE992D11BA278F700630A5A /* XHNewsItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +291,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -294,6 +310,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "2e2e45ef-b219-453c-a669-738ff5edf613";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -331,6 +348,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "2e2e45ef-b219-453c-a669-738ff5edf613";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -340,9 +358,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = sFlow/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cn.com.taovision.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -350,9 +373,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = sFlow/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cn.com.taovision.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -370,6 +398,7 @@
 				);
 				INFOPLIST_FILE = sFlowTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "taovison.com.cn.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sFlow.app/sFlow";
 			};
@@ -385,6 +414,7 @@
 				);
 				INFOPLIST_FILE = sFlowTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "taovison.com.cn.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sFlow.app/sFlow";
 			};
@@ -409,6 +439,7 @@
 				7AE992B71BA2780000630A5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7AE992B81BA2780000630A5A /* Build configuration list for PBXNativeTarget "sFlowTests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +448,7 @@
 				7AE992BA1BA2780000630A5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

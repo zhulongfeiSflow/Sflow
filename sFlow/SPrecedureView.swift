@@ -47,66 +47,13 @@ class SPrecedureView: UITableViewController {
         "发布": HexRGB(0x3aaa32)
     ]
     
-    func loadResource() {
-        var url = detailURL + m_ids! + "&date=\(m_time)"
-        var loadURL = NSURL(string:url)
-        var request = NSURLRequest(URL: loadURL!)
-        var loadDataSourceQueue = NSOperationQueue();
-//        println(url)
-        
-        NSURLConnection.sendAsynchronousRequest(request, queue: loadDataSourceQueue, completionHandler: { response, data, error in
-            if (error != nil) {
-                println(error)
-            } else {
-                let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as! NSArray
-                println( json )
-                self.adHeaders!.removeAll(keepCapacity: true)
-                self.allnames!.removeAll(keepCapacity: true)
-                
-                var k = 0
-                for currentNews : AnyObject in json {
-                    
-                    var procedureTitle:[String] = [String]()
-                    procedureTitle.append(currentNews["Procedure"] as! String)
-                    procedureTitle.append( String(currentNews["Finished"] as! Int) )
-                    
-                    self.adHeaders![k] = procedureTitle
-                    
-                    var laborDetailList = [[String]]()
-                    for labor: AnyObject in currentNews["Details"] as! NSArray {
-                        var detail = [String]()
-                        var name = labor["Name"] as! String
-                        var group = labor["Group"] as! String
-                        var time = labor["LogTime"] as! String
-                        var finished = String(labor["Finished"] as! Int)
-                        detail.append("\(name) \(group) \(time)")
-                        detail.append(finished)
-                        laborDetailList.append(detail)
-                    }
-                    self.allnames![k] = laborDetailList
-                    
-                    k++
-                }
-                
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.tableView.reloadData()
-                })
-                
-            }
-        })
-    }
-    
     init(projectIds initIds: String){
-        m_ids = initIds
+        self.m_ids = initIds
         super.init(nibName:nil, bundle:nil)
     }
 
-    required init!(coder aDecoder: NSCoder!) {
+    required init!(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func loadView() {
-        super.loadView()
     }
     
     override func viewDidLoad() {
@@ -120,39 +67,75 @@ class SPrecedureView: UITableViewController {
         //创建一个重用的单元格
         self.tableView!.registerClass(UITableViewCell.self, forCellReuseIdentifier: "SwiftCell")
         
-        self.setupRefresh()
+        let refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "下拉刷新")
+        refreshControl.addTarget(self, action: "loadResource", forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl = refreshControl
         
         loadResource()
     }
     
-    //刷新函数
-    func setupRefresh(){
-        self.tableView.addHeaderWithCallback({
-            
-            //refresh data here
-            self.loadResource()
-            
-            let delayInSeconds:Int64 =  1000000000  * 2
-            var popTime:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW,delayInSeconds)
-            dispatch_after(popTime, dispatch_get_main_queue(), {
-//                self.tableView.reloadData()
-                self.tableView.headerEndRefreshing()
-            })
-        })
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
         
-        self.tableView.addFooterWithCallback({
-            
-            //add data here
-            self.loadResource()
-            
-            let delayInSeconds:Int64 = 1000000000 * 2
-            var popTime:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW,delayInSeconds)
-            dispatch_after(popTime, dispatch_get_main_queue(), {
-//                self.tableView.reloadData()
-                self.tableView.footerEndRefreshing()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func loadResource() {
+        self.refreshControl!.beginRefreshing()
+        
+        let url = self.detailURL + self.m_ids! + "&date=\(self.m_time)"
+        let loadURL = NSURL(string:url)
+        let request = NSURLRequest(URL: loadURL!)
+        let loadDataSourceQueue = NSOperationQueue();
+//        println(url)
+        
+        var allnamesTemp = Dictionary<Int, [[String]] >()
+        var adHeadersTemp = Dictionary<Int, [String]>()
+        
+        NSURLConnection.sendAsynchronousRequest(request, queue: loadDataSourceQueue, completionHandler: { response, data, error in
+            if (error != nil) {
+//                print(error)
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.refreshControl!.endRefreshing()
+                })
+            } else {
+                let json = (try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers)) as! NSArray
+                print( json )
                 
-                //self.tableView.setFooterHidden(true)
-            })
+                var k = 0
+                for currentNews : AnyObject in json {
+                    
+                    var procedureTitle:[String] = [String]()
+                    procedureTitle.append(currentNews["Procedure"] as! String)
+                    procedureTitle.append( String(currentNews["Finished"] as! Int) )
+                    
+                    adHeadersTemp[k] = procedureTitle
+                    
+                    var laborDetailList = [[String]]()
+                    for labor: AnyObject in currentNews["Details"] as! NSArray {
+                        var detail = [String]()
+                        let name = labor["Name"] as! String
+                        let group = labor["Group"] as! String
+                        let time = labor["LogTime"] as! String
+                        let finished = String(labor["Finished"] as! Int)
+                        detail.append("\(name) \(group) \(time)")
+                        detail.append(finished)
+                        laborDetailList.append(detail)
+                    }
+                    allnamesTemp[k] = laborDetailList
+                    
+                    k++
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.adHeaders = adHeadersTemp
+                    self.allnames = allnamesTemp
+                    self.tableView.reloadData()
+                    self.refreshControl!.endRefreshing()
+                })
+                
+            }
         })
     }
     
@@ -163,7 +146,7 @@ class SPrecedureView: UITableViewController {
     
     //返回每组表格行数（也就是返回控件数）
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        var data = self.allnames?[section]
+        let data = self.allnames?[section]
         return data!.count
     }
     
@@ -218,9 +201,9 @@ class SPrecedureView: UITableViewController {
 //        let cell = tableView.dequeueReusableCellWithIdentifier(identify, forIndexPath: indexPath) as! UITableViewCell
 //        cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         
-        var cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: identify)
+        let cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: identify)
         
-        var secno = indexPath.section
+        let secno = indexPath.section
         var data = self.allnames?[secno]
         
         cell.textLabel?.text = data![indexPath.row][0]
@@ -251,11 +234,5 @@ class SPrecedureView: UITableViewController {
 //        alertview.addButtonWithTitle("确定")
 //        alertview.show();
         
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        
-        // Dispose of any resources that can be recreated.
     }
 }

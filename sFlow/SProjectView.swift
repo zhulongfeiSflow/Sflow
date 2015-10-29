@@ -19,7 +19,7 @@ class SProjectView: UITableViewController {
     
     var thumbQueue = NSOperationQueue()
     
-    let hackerNewsApiUrl = "http://218.75.65.122:4002/project"
+    var hackerNewsApiUrl = "http://218.75.65.122:4002/project"
     
     override func viewWillDisappear(animated: Bool) {
         self.tableView!.reloadData()
@@ -39,92 +39,61 @@ class SProjectView: UITableViewController {
         
         self.tableView!.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
-        self.setupRefresh()
+        let refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "下拉刷新")
+        refreshControl.addTarget(self, action: "loadDataSource", forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl = refreshControl
         
         loadDataSource()
         
     }
     
-    //刷新函数
-    func setupRefresh(){
-        self.tableView.addHeaderWithCallback({
-            
-            //refresh data here
-            self.loadDataSource()
-            
-            let delayInSeconds:Int64 = 1000000000  * 2
-            var popTime:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW,delayInSeconds)
-            dispatch_after(popTime, dispatch_get_main_queue(), {
-                //                self.tableView.reloadData()
-                self.tableView.headerEndRefreshing()
-            })
-        })
-        
-        self.tableView.addFooterWithCallback({
-            
-            //add data here
-            self.loadDataSource()
-            
-            let delayInSeconds:Int64 = 1000000000 * 2
-            var popTime:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW,delayInSeconds)
-            dispatch_after(popTime, dispatch_get_main_queue(), {
-                //                self.tableView.reloadData()
-                self.tableView.footerEndRefreshing()
-                
-                //self.tableView.setFooterHidden(true)
-            })
-        })
-    }
-    
     func loadDataSource() {
-//        self.refreshControl!.beginRefreshing()
+        self.refreshControl!.beginRefreshing()
         
-//        var currentNewsDataSource = NSMutableArray()
-//        let proNames = [ ("杨家沟的天", 1), ("珍珠港", 2), ("诱狼3D", 3), ("RYRY_R1", 4), ("斯大林格勒", 5)]
-//        for (name, id) in proNames{
-//            let newsItem = XHNewsItem()
-//            newsItem.newsTitle = name
-//            newsItem.newsID = "\(id)"
-//            currentNewsDataSource.addObject(newsItem)
-//        }
-//        println(proNames)
-//        self.dataSource = currentNewsDataSource
-//        self.refreshControl!.endRefreshing()
-        
-        var loadURL = NSURL(string:hackerNewsApiUrl)
-        var request = NSURLRequest(URL: loadURL!)
-        var loadDataSourceQueue = NSOperationQueue();
+        let loadURL = NSURL(string:hackerNewsApiUrl)
+        let request = NSURLRequest(URL: loadURL!)
+        let loadDataSourceQueue = NSOperationQueue();
         
         NSURLConnection.sendAsynchronousRequest(request, queue: loadDataSourceQueue, completionHandler: { response, data, error in
             if (error != nil) {
-                println(error)
-//                dispatch_async(dispatch_get_main_queue(), {
-//                    self.refreshControl!.endRefreshing()
-//                })
+//                print(error)
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.refreshControl!.endRefreshing()
+                })
             } else {
-                let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as! NSDictionary
+                let json = (try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers)) as! NSDictionary
 //                println( json )
-                var  names = String()
-                var currentNewsDataSource = NSMutableArray()
-                for (_, currentNews : AnyObject) in json { //"_"下划线意思是忽略key的AnyObject
+                var names = String()
+                let currentNewsDataSource = NSMutableArray()
+                
+                //数据遍历时乱序的
+                for (key, currentNews) in json { //"_"下划线意思是忽略key的AnyObject
                     let newsItem = XHNewsItem()
                     newsItem.newsTitle = currentNews["name"] as! NSString
                     newsItem.newsID = currentNews["id"] as! NSNumber
+                    newsItem.dataId = key as! NSString
                     currentNewsDataSource.addObject(newsItem)
-                    names +=  " \(newsItem.newsTitle)"
+                    names +=  " \(newsItem.newsTitle)-\(key)"
                 }
-                println( names )
+                print( names )
+                //重新排序
+                currentNewsDataSource.sortUsingComparator({ (s1:AnyObject!, s2:AnyObject!) -> NSComparisonResult in
+                    let str1 = s1 as! XHNewsItem
+                    let str2 = s2 as! XHNewsItem
+                    return str1.dataId.localizedCompare(str2.dataId as String)
+                })
                 
                 names = String()
-                for (key, value) in self.selectedProjectIdList {
+                for (_, value) in self.selectedProjectIdList {
                     names += value
                 }
-                println( names )
+                print( names )
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.dataSource = currentNewsDataSource
                     self.tableView.reloadData()
-//                    self.refreshControl!.endRefreshing()
+                    self.refreshControl!.endRefreshing()
                 })
             }
         })
@@ -144,7 +113,7 @@ class SProjectView: UITableViewController {
             self.navigationItem.rightBarButtonItem!.title = "选择项目"
             var projectIds = String()
             
-            for (key, value) in selectedProjectIdList {
+            for (key, _) in selectedProjectIdList {
                 if projectIds.isEmpty {
                     projectIds = String(key)
                 } else {
@@ -154,8 +123,8 @@ class SProjectView: UITableViewController {
             if selectedProjectIdList.count > 0 {
                 
                 //open the statistics page
-                var webView = SprogressStatisticsView(projectIds: projectIds)
-                println( projectIds )
+                let webView = SprogressStatisticsView(projectIds: projectIds)
+                print( projectIds )
                 //webView.detailID=data.newsID
                 //取导航控制器,添加subView
                 self.navigationController!.pushViewController(webView,animated:true)
@@ -179,7 +148,7 @@ class SProjectView: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         
-        let cell = tableView .dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView .dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) 
         
         let newsItem = dataSource[indexPath.row] as! XHNewsItem
         cell.textLabel!.text = newsItem.newsTitle as String
@@ -201,18 +170,18 @@ class SProjectView: UITableViewController {
     
     // #pragma mark - Segues
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        println("aa")
+        print("aa")
     }
     
     //选择一行
     override func tableView(tableView: (UITableView!), didSelectRowAtIndexPath indexPath: NSIndexPath){
         
         if self.tableView!.editing {
-            var row=indexPath.row as Int
-            var data=self.dataSource[row] as! XHNewsItem
+            let row=indexPath.row as Int
+            let data=self.dataSource[row] as! XHNewsItem
             selectedProjectIdList[ data.newsID as Int ] = data.newsTitle as String
             
-            println( "Select \(data.newsTitle) \(data.newsID)" )
+            print( "Select \(data.newsTitle) \(data.newsID)" )
         }
 //        //入栈
 //        
@@ -226,11 +195,11 @@ class SProjectView: UITableViewController {
     override func tableView(tableView: (UITableView!), didDeselectRowAtIndexPath indexPath: NSIndexPath){
         
         if self.tableView!.editing {
-            var row=indexPath.row as Int
-            var data=self.dataSource[row] as! XHNewsItem
+            let row=indexPath.row as Int
+            let data=self.dataSource[row] as! XHNewsItem
             selectedProjectIdList.removeValueForKey(data.newsID as Int)
             
-            println( "Deselect \(data.newsTitle) \(data.newsID)" )
+            print( "Deselect \(data.newsTitle) \(data.newsID)" )
         }
     }
     

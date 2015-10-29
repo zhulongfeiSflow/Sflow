@@ -12,4 +12,5 @@ class XHNewsItem {
     var newsTitle = NSString()
     var newsThumb = NSString()
     var newsID = NSNumber()
+    var dataId = NSString()
 }
